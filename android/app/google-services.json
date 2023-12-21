@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "617281712367",
+    "firebase_url": "https://chat-app-badfa-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "chat-app-badfa",
+    "storage_bucket": "chat-app-badfa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617281712367:android:782779b99aebde72d82b1a",
+        "android_client_info": {
+          "package_name": "com.example.public_chats"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "617281712367-p49a2j80v600n86cap8u3m459lte3muc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.public_chats",
+            "certificate_hash": "296853befb7f3f9de7998da3c5f277d962b8f4a6"
+          }
+        },
+        {
+          "client_id": "617281712367-os0eimnijva7t28na30nquke9pstmfrg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbwhvIsQDOd1_8EYpnZhFWEfmiNdsxW-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617281712367-os0eimnijva7t28na30nquke9pstmfrg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
