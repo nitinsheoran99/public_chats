@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:public_chats/api/apis.dart';
+import 'package:public_chats/auth/login_screen.dart';
+import 'package:public_chats/helper/dialogs.dart';
 import 'package:public_chats/main.dart';
 import 'package:public_chats/models/chat_user_model.dart';
 
@@ -26,8 +28,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: FloatingActionButton.extended(
           backgroundColor: Colors.redAccent,
           onPressed: () async {
-            await APIs.auth.signOut();
-            await GoogleSignIn().signOut();
+            Dialogs.showProgressBar(context);
+            await APIs.auth.signOut().then((value) async {
+              await GoogleSignIn().signOut().then((value) {
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LoginScreen()));
+              });
+
+            });
+            
           },
           icon: const Icon(
             Icons.logout,
@@ -44,17 +54,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
               width: mq.width,
               height: mq.height * .03,
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(mq.height * .1),
-              child: CachedNetworkImage(
-                width: mq.height * .2,
-                height: mq.height * .2,
-                fit: BoxFit.fill,
-                imageUrl: widget.user.image,
-                errorWidget: (context, url, error) => CircleAvatar(
-                  child: Icon(Icons.person),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(mq.height * .1),
+                  child: CachedNetworkImage(
+                    width: mq.height * .2,
+                    height: mq.height * .2,
+                    fit: BoxFit.fill,
+                    imageUrl: widget.user.image,
+                    errorWidget: (context, url, error) => CircleAvatar(
+                      child: Icon(Icons.person),
+                    ),
+                  ),
                 ),
-              ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: MaterialButton(
+                    elevation: 1,
+                    onPressed: (){},
+                    shape: const CircleBorder(),
+                    color: Colors.white,
+                    child: Icon(Icons.edit,color: Colors.blue,),),
+                )
+              ],
             ),
             //for adding some space
             SizedBox(
