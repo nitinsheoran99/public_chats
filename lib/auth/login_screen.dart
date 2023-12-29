@@ -114,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 _handleGoogleClick();
               },
               icon: Image.asset(
-                'assets/imagesf/google.png',
+                'assets/images/google.png',
                 height: mq.height * .02,
               ),
               label: RichText(
