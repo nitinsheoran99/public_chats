@@ -7,6 +7,7 @@ import 'package:public_chats/main.dart';
 import 'package:public_chats/models/chat_user_model.dart';
 import 'package:public_chats/models/message.dart';
 import 'package:public_chats/screens/chat_screen.dart';
+import 'package:public_chats/widget/dialog/profile_dialog.dart';
 
 class ChatUserCard extends StatefulWidget {
   final ChatUser user;
@@ -52,31 +53,36 @@ class _ChatUserCardState extends State<ChatUserCard> {
               if (list.isNotEmpty) _message = list[0];
 
               return ListTile(
-                // leading: const CircleAvatar(
-                //   child: Icon(Icons.person),
-                // ),
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(mq.height * .3),
-                  child: CachedNetworkImage(
-                    width: mq.height * .055,
-                    height: mq.height * .055,
-                    imageUrl: widget.user.image,
-                    errorWidget: (context, url, error) => CircleAvatar(
-                      child: Icon(Icons.person),
+                leading: InkWell(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => ProfileDialog(user: widget.user));
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .03),
+                    child: CachedNetworkImage(
+                      width: mq.height * .055,
+                      height: mq.height * .055,
+                      imageUrl: widget.user.image,
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                          child: Icon(CupertinoIcons.person)),
                     ),
                   ),
                 ),
                 title: Text(widget.user.name),
                 subtitle: Text(
-                  _message != null ?
-                      _message!.type== Type.image ?'image' :
-                      _message!.msg
+                  _message != null
+                      ? _message!.type == Type.image
+                          ? 'image'
+                          : _message!.msg
                       : widget.user.about,
                   maxLines: 1,
                 ),
                 trailing: _message == null
                     ? null
-                    : _message!.read.isEmpty && _message!.fromId != APIs.user.uid
+                    : _message!.read.isEmpty &&
+                            _message!.fromId != APIs.user.uid
                         ? Container(
                             width: 15,
                             height: 15,
@@ -86,7 +92,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
                             ),
                           )
                         : Text(
-                            MyDateUtil.getLastMessageTime(context: context, time: _message!.sent),
+                            MyDateUtil.getLastMessageTime(
+                                context: context, time: _message!.sent),
                             style: const TextStyle(
                               color: Colors.black54,
                             ),

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:public_chats/api/apis.dart';
+import 'package:public_chats/helper/dialogs.dart';
 
 import 'package:public_chats/main.dart';
 import 'package:public_chats/models/chat_user_model.dart';
@@ -24,6 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     APIs.getSelfInfo();
     super.initState();
+    SystemChannels.lifecycle.setMessageHandler((message){
+      if (APIs.auth.currentUser != null) {
+        if (message.toString().contains('resume')) {
+          APIs.updateActiveStatus(true);
+        }
+        if (message.toString().contains('pause')) {
+          APIs.updateActiveStatus(false);
+        }
+      }
+      return Future.value(message);
+    });
   }
 
   @override
@@ -50,10 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
             leading: const Icon(Icons.home),
             title: _isSearching
                 ? TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         border: InputBorder.none, hintText: "Name,Email,..."),
                     autofocus: true,
-                    style: TextStyle(fontSize: 16, letterSpacing: 1),
+                    style: const TextStyle(fontSize: 16, letterSpacing: 1),
                     onChanged: (val) {
                       _searchList.clear();
                       for (var i in _list) {
@@ -97,9 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
           floatingActionButton: Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: FloatingActionButton(
-              onPressed: () async {
-                await APIs.auth.signOut();
-                await GoogleSignIn().signOut();
+              onPressed: () {
+                _addChatUserDialog();
               },
               child: const Icon(
                 Icons.add_comment_rounded,
@@ -147,5 +159,72 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+  void _addChatUserDialog() {
+    String email = '';
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          contentPadding: const EdgeInsets.only(
+              left: 24, right: 24, top: 20, bottom: 10),
+
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20)),
+
+          //title
+          title: Row(
+            children: const [
+              Icon(
+                Icons.person_add,
+                color: Colors.blue,
+                size: 28,
+              ),
+              Text('  Add User')
+            ],
+          ),
+
+          //content
+          content: TextFormField(
+            maxLines: null,
+            onChanged: (value) => email = value,
+            decoration: InputDecoration(
+                hintText: 'Email Id',
+                prefixIcon: const Icon(Icons.email, color: Colors.blue),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15))),
+          ),
+
+          //actions
+          actions: [
+            //cancel button
+            MaterialButton(
+                onPressed: () {
+                  //hide alert dialog
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancel',
+                    style: TextStyle(color: Colors.blue, fontSize: 16))),
+
+            //add button
+            MaterialButton(
+                onPressed: () async {
+                  //hide alert dialog
+                  Navigator.pop(context);
+                  if (email.isNotEmpty) {
+                    await APIs.addChatUser(email).then((value) {
+                      if (!value) {
+                        Dialogs.showSnackbar(
+                            context, 'User does not Exists!');
+                      }
+                    });
+                  }
+                },
+                child: const Text(
+                  'Add',
+                  style: TextStyle(color: Colors.blue, fontSize: 16),
+                ))
+          ],
+        ));
   }
 }

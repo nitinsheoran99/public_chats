@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Welcome to Chat Sphere'),
+        title: const Text('Welcome to Public Chats'),
       ),
       body: Stack(
         children: [
